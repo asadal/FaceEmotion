@@ -4,3 +4,4 @@ torch
 ultralytics
 fer
 pillow
+tensorflow
