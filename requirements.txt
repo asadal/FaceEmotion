@@ -3,4 +3,5 @@ opencv-python
 retina-face
 fer
 pillow
-tensorflow==2.4.0
+tensorflow
+tf-keras
