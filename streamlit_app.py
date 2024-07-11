@@ -43,6 +43,7 @@ def detect_faces_and_emotions(img):
             if emotions:
                 # 모든 감정을 높은 점수 순서대로 정렬
                 sorted_emotions = sorted(emotions[0]["emotions"].items(), key=lambda item: item[1], reverse=True)
+                st.write(f"Emotions for face {key}: ", sorted_emotions)
                 y_offset = y1
                 for emotion, score in sorted_emotions:
                     if score > 0.0:  # 점수가 0보다 큰 감정만 라벨링
@@ -76,31 +77,41 @@ def detect_faces_and_emotions(img):
 
     return img_rgb
 
-st.title("Emotion Detection from Image")
-
-uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "webp", "bmp"])
-
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    st.image(image, caption='Uploaded Image', use_column_width=True)
-
-    st.write("")
-    st.write("Detecting emotions...")
-
-    result_img = detect_faces_and_emotions(image)
-    result_pil_img = Image.fromarray(cv2.cvtColor(result_img, cv2.COLOR_BGR2RGB))
-
-    st.image(result_pil_img, caption='Processed Image', use_column_width=True)
-
-    # 결과 이미지를 바이트 배열로 변환
-    buf = io.BytesIO()
-    result_pil_img.save(buf, format="JPEG")
-    byte_im = buf.getvalue()
-
-    # 다운로드 버튼 추가
-    st.download_button(
-        label="Download Processed Image",
-        data=byte_im,
-        file_name="processed_image.jpg",
-        mime="image/jpeg"
+def app():
+    st.set_page_config(
+        page_title="Emotion Detection",
+        page_icon="https://static-00.iconduck.com/assets.00/ios-face-recognition-icon-2048x2048-3kp5zcs2.png"
     )
+    # Featured image
+    st.image(
+        "https://static-00.iconduck.com/assets.00/ios-face-recognition-icon-2048x2048-3kp5zcs2.png",
+        width=150
+    )
+    # Main title and description
+    st.title("Emotion Detection from Image")
+    st.markdown("Detect faces from uploaded photos and analyse their emotions.")
+    
+    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "webp", "bmp"])
+    
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption='Uploaded Image', use_column_width=True)
+        st.write("")
+        st.write("Detecting emotions...")
+        result_img = detect_faces_and_emotions(image)
+        result_pil_img = Image.fromarray(cv2.cvtColor(result_img, cv2.COLOR_BGR2RGB))
+        st.image(result_pil_img, caption='Processed Image', use_column_width=True)
+        # 결과 이미지를 바이트 배열로 변환
+        buf = io.BytesIO()
+        result_pil_img.save(buf, format="JPEG")
+        byte_im = buf.getvalue()
+        # 다운로드 버튼 추가
+        st.download_button(
+            label="Download Processed Image",
+            data=byte_im,
+            file_name="processed_image.jpg",
+            mime="image/jpeg"
+        )
+
+if __name__ == "__main__":
+    app()
